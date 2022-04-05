@@ -1,3 +1,5 @@
+В качестве интерполируемой функции возьмём <img src="https://render.githubusercontent.com/render/math?math=e^{-x^2}">
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -132,66 +134,6 @@ def get_newton_polynomial(nodes):
   sep_diffs = get_separate_differences(nodes)
   return lambda x: get_newton_polynomial_value_in(x, nodes, sep_diffs)
 ```
-
-Задание 5: берём всё больше точек для построения интерполяции и проверяем точность. Тут я нахожу интерполяционный многочлен уже методом Ньютона, что демонстрирует, что оба варианта работоспособны.
-
-Результатом выполнения кода можно увидеть ответы для sqrt(2) / 2 и pi / 7 для метода Ньютона и Эрмита
-
-
-```python
-def get_dot_value(dot, use_ermit):
-  all_nodes = sorted(np.linspace(x_min, x_max, 100), key=lambda x: abs(x - dot))
-  best_dot = None
-  best_count = None
-  for nodes_count in range(1, 100):
-    poly = None
-    if use_ermit:
-      poly = get_newton_polynomial(duplicate_nodes(sorted(all_nodes[:nodes_count])))
-    else:
-      poly = get_newton_polynomial(sorted(all_nodes[:nodes_count]))
-    if abs(poly(dot) - f(dot)) < 1e-10:
-      best_dot = poly(dot)
-      best_count = nodes_count
-      break
-  print("Интерполяция Эрмита" if use_ermit else "Интерполяционный многочлен")
-  print(f"f({dot}):", f(dot))
-  print("Удалось получить значение:", best_dot)
-  print("Точность:", abs(best_dot - f(dot)))
-  print("Понадобилось узлов:", best_count)
-  print()
-
-
-get_dot_value(math.sqrt(2) / 2, False)
-get_dot_value(math.sqrt(2) / 2, True)
-
-get_dot_value(math.pi / 7, False)
-get_dot_value(math.pi / 7, True)
-```
-
-    Интерполяционный многочлен
-    f(0.7071067811865476): 0.6065306597126334
-    Удалось получить значение: 0.6065306597670808
-    Точность: 5.4447335529062e-11
-    Понадобилось узлов: 11
-    
-    Интерполяция Эрмита
-    f(0.7071067811865476): 0.6065306597126334
-    Удалось получить значение: 0.6065306597113312
-    Точность: 1.3021805855828461e-12
-    Понадобилось узлов: 5
-    
-    Интерполяционный многочлен
-    f(0.4487989505128276): 0.817568573328328
-    Удалось получить значение: 0.817568573364442
-    Точность: 3.611400067882187e-11
-    Понадобилось узлов: 10
-    
-    Интерполяция Эрмита
-    f(0.4487989505128276): 0.817568573328328
-    Удалось получить значение: 0.8175685732965133
-    Точность: 3.181466201596095e-11
-    Понадобилось узлов: 3
-    
 
 
 Много кода для реализации кубических сплайнов. Код может работать не только с равноотстоящими точками, для чего были реализованы функции get_h_i, get_e_i и get_c_i. В дальнейшем я использовал этот код с минимальными изменениями для построения бикубического сплайна
